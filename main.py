@@ -1,3 +1,6 @@
+def HeyBitch():
+    print("its me kiddo")
+#Hey its me ja boiiiii
 import os, atexit, socket
 from flask import Flask, jsonify #pip install flask
 from apscheduler.schedulers.background import BackgroundScheduler
