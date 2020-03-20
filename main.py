@@ -3,6 +3,7 @@ from flask import Flask, jsonify #pip install flask
 from apscheduler.schedulers.background import BackgroundScheduler
 import covidInfoUpdater as covid
 
+#IP variables
 localHost = '127.0.0.1'
 globalHost = 'xxx.xxx.xxx.xxx'
 
