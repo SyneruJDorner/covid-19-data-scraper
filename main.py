@@ -2,6 +2,7 @@ import os, time, atexit
 import requests #pip install requests
 from flask import Flask, jsonify #pip install flask
 from lxml import html #pip install lxml
+import socket
 from apscheduler.schedulers.background import BackgroundScheduler
 import datetime
 
@@ -70,6 +71,10 @@ def infoFetcher():
     print("Updated the API [" + str(datetime.datetime.now()) + "]")
 
 def main():
+    global globalHost
+    hostname = socket.gethostname()    
+    globalHost = socket.gethostbyname(hostname)  
+
     infoFetcher()
     scheduler = BackgroundScheduler()
     scheduler.add_job(func=infoFetcher, trigger="interval", seconds=20)
