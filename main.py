@@ -11,6 +11,7 @@ globalHost = 'xxx.xxx.xxx.xxx'
 clear = lambda: os.system('cls')
 coronaGlobalData = dict()
 coronaLocalData = dict()
+countryList = list()
 
 #init flask
 app = Flask(__name__)
@@ -53,6 +54,16 @@ def updateLocalStats(htmlContents):
         newCoronaLocalData.update(dicInfo)
     coronaLocalData = newCoronaLocalData
 
+def updateAffectedCountries():
+    global coronaLocalData
+    global countryList
+    newCountryList = list()
+
+    for item in coronaLocalData:
+        newCountryList.append(item.title())
+    newCountryList.sort()
+    countryList = newCountryList
+
 @app.route('/global')
 def getGlobalStats():
     global coronaGlobalData
@@ -63,11 +74,20 @@ def getLocalStatsByCountry(id):
     global coronaLocalData
     return coronaLocalData[id.lower()]
 
+@app.route('/getCountryList')
+def getCountryList():
+    global countryList
+    return jsonify(countryList)
+
 def infoFetcher():
     page = requests.get('https://www.worldometers.info/coronavirus/')
     htmlContents = html.fromstring(page.text)
+
+    #update our global variables
     updateGlobalStats(htmlContents)
     updateLocalStats(htmlContents)
+    updateAffectedCountries()
+
     print("Updated the API [" + str(datetime.datetime.now()) + "]")
 
 def main():
@@ -81,7 +101,7 @@ def main():
     scheduler.start()
     atexit.register(lambda: scheduler.shutdown())
 
-    app.run(host=globalHost, port='8000', debug=False, use_reloader=False)
+    app.run(host=localHost, port='8000', debug=False, use_reloader=False)
 
 if __name__ == "__main__":
     main()
